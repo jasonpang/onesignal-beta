@@ -174,7 +174,6 @@
       };
       if ($('#subdomain').val())
         options['subdomainName'] = $('#subdomain').val();
-      ;
       if ($('#safariId').val())
         options['safari_web_id'] = $('#safariId').val();
       options['welcomeNotification'] = {
@@ -182,7 +181,6 @@
         message: 'Thanks for subscribing!',
         url: 'https://www.jasonpang.me'
       };
-    }
       OneSignal.push(["init", options]);
     });
     $('#btn-register').click(function() {
