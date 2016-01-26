@@ -131,7 +131,7 @@
     $('#btn-http, #btn-https').click(function() {
       window.OneSignal = window.OneSignal || [];
       OneSignal.push(function () {
-        OneSignal.LOGGING = $('#enable-logging').is(':checked');
+        OneSignal.log.setLevel('trace');
       });
       var options = {};
       options['appId'] = $('#appId').val();
