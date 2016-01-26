@@ -5,7 +5,7 @@
   <title>OneSignal Web Push SDK</title>
   <link rel="stylesheet" href="semantic.min.css">
   <!-- For HTTPS sites; HTTP sites will not be affected by this entry -->
-  <link rel="manifest" href="/beta/manifest.json">
+  <link rel="manifest" href="/onesignal-beta/manifest.json">
   <style>
     .ui.grid + .ui.grid {
       margin-top: 20px;
@@ -94,26 +94,20 @@
   $(function() {
     $('#preset-prod-no-subdomain').click(function() {
       $(window).on('webpushtest.sdkloaded', function() {
-        /*
-         $('#appId').val('7b6053e0-9911-4003-a0a4-a33e417ad663');
-         $('#subdomain').val('webpush');
-         */
-        $('#appId').val('665c2638-77f8-489d-9226-49e5858eace0');
-        $('#safariId').val('web.com.onesignal.example');
+        $('#appId').val('94db93b8-5838-4acb-a438-4de8a775fb10');
+        $('#safariId').val('web.onesignal.auto.56640081-e0ac-44c5-9d26-db4b2624f604');
         $('#btn-https').click();
+        $('#send-welcome-notification').click();
       });
       $('#btn-production-beta-sdk').click();
     });
     $('#preset-prod-subdomain').click(function() {
       $(window).on('webpushtest.sdkloaded', function() {
-        /*
-         $('#appId').val('7b6053e0-9911-4003-a0a4-a33e417ad663');
-         $('#subdomain').val('webpush');
-         */
-        $('#appId').val('665c2638-77f8-489d-9226-49e5858eace0');
-        $('#subdomain').val('s-onesignalexample');
-        $('#safariId').val('web.com.onesignal.example');
+        $('#appId').val('94db93b8-5838-4acb-a438-4de8a775fb10');
+        $('#subdomain').val('jasonpang');
+        $('#safariId').val('web.onesignal.auto.56640081-e0ac-44c5-9d26-db4b2624f604');
         $('#btn-https').click();
+        $('#send-welcome-notification').click();
       });
       $('#btn-production-beta-sdk').click();
     });
@@ -152,6 +146,7 @@
       OneSignal.push(function() {  OneSignal.LOGGING = $('#enable-logging').is(':checked'); });
       var options = {};
       options['appId'] = $('#appId').val();
+      options['path'] = '/onesignal-beta/';
       options['autoRegister'] = false;
       options['persistNotification'] = false;
 //            options['webhooks'] = {
@@ -194,13 +189,13 @@
         options['safari_web_id'] = $('#safariId').val();
       if (!$('#send-welcome-notification').is(':checked')) {
         options['welcomeNotification'] = {
-          disable: true
+          title: 'My Personal Blog',
+          message: 'Thanks for subscribing!',
+          url: 'https://www.jasonpang.me'
         };
       } else {
         options['welcomeNotification'] = {
-          title: 'My Tech Blog',
-          message: 'Thanks for subscribing!',
-          url: 'https://www.google.com'
+          disable: true
         };
       }
       OneSignal.push(["init", options]);
