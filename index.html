@@ -49,7 +49,7 @@
       </div>
       <div class="inline field">
         <div class="ui checkbox">
-          <input id="send-welcome-notification" type="checkbox" tabindex="1">
+          <input id="send-welcome-notification" type="checkbox" tabindex="1" checked="true">
           <label>Send welcome notification</label>
         </div>
       </div>
@@ -97,7 +97,6 @@
         $('#appId').val('94db93b8-5838-4acb-a438-4de8a775fb10');
         $('#safariId').val('web.onesignal.auto.56640081-e0ac-44c5-9d26-db4b2624f604');
         $('#btn-https').click();
-        $('#send-welcome-notification').click();
       });
       $('#btn-production-beta-sdk').click();
     });
@@ -107,20 +106,8 @@
         $('#subdomain').val('jasonpang');
         $('#safariId').val('web.onesignal.auto.56640081-e0ac-44c5-9d26-db4b2624f604');
         $('#btn-https').click();
-        $('#send-welcome-notification').click();
       });
       $('#btn-production-beta-sdk').click();
-    });
-
-    $('#btn-development-sdk').click(function() {
-//            $.getScript( DEV_HOST + "/dev_sdks/OneSignalSDK.js", function( data, textStatus, code ) {
-//                console.info('Loading development OneSignal SDK script: ', code);
-//                window.OneSignal = window.OneSignal || [];
-//                $(window).trigger('webpushtest.sdkloaded');
-//            });
-
-      window.OneSignal = window.OneSignal || [];
-      $(window).trigger('webpushtest.sdkloaded');
     });
 
     $('#btn-production-local-sdk').click(function() {
@@ -143,7 +130,9 @@
     });
     $('#btn-http, #btn-https').click(function() {
       window.OneSignal = window.OneSignal || [];
-      OneSignal.push(function() {  OneSignal.LOGGING = $('#enable-logging').is(':checked'); });
+      OneSignal.push(function () {
+        OneSignal.LOGGING = $('#enable-logging').is(':checked');
+      });
       var options = {};
       options['appId'] = $('#appId').val();
       options['path'] = '/onesignal-beta/';
@@ -184,20 +173,16 @@
         }
       };
       if ($('#subdomain').val())
-        options['subdomainName'] =  $('#subdomain').val();;
+        options['subdomainName'] = $('#subdomain').val();
+      ;
       if ($('#safariId').val())
         options['safari_web_id'] = $('#safariId').val();
-      if (!$('#send-welcome-notification').is(':checked')) {
-        options['welcomeNotification'] = {
-          title: 'My Personal Blog',
-          message: 'Thanks for subscribing!',
-          url: 'https://www.jasonpang.me'
-        };
-      } else {
-        options['welcomeNotification'] = {
-          disable: true
-        };
-      }
+      options['welcomeNotification'] = {
+        title: 'My Personal Blog',
+        message: 'Thanks for subscribing!',
+        url: 'https://www.jasonpang.me'
+      };
+    }
       OneSignal.push(["init", options]);
     });
     $('#btn-register').click(function() {
