@@ -143,7 +143,7 @@
     });
     $('#btn-http, #btn-https').click(function() {
       window.OneSignal = window.OneSignal || [];
-      OneSignal.push(function() {  OneSignal.LOGGING = $('#enable-logging').is(':checked'); });
+      //OneSignal.push(function() {  OneSignal.LOGGING = $('#enable-logging').is(':checked'); });
       var options = {};
       options['appId'] = $('#appId').val();
       options['path'] = '/onesignal-beta/';
