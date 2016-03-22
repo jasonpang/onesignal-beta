@@ -1,215 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+  <meta charset="UTF-8">
   <title>OneSignal Web Push SDK</title>
-  <link rel="stylesheet" href="semantic.min.css">
-  <!-- For HTTPS sites; HTTP sites will not be affected by this entry -->
+  <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
   <link rel="manifest" href="/onesignal-beta/manifest.json">
-  <style>
-    .ui.grid + .ui.grid {
-      margin-top: 20px;
-    }
-  </style>
   <script src="https://cdn.onesignal.com/sdks/OneSignalSDKBeta.js" async></script>
 </head>
 <body>
-<div style="height:25px;"></div>
-<div class="ui centered grid">
-  <div class="ui segment">
-    <h4 class="ui header">Presets</h4>
-    <button id="preset-prod-no-subdomain" class="ui basic violet button">Production Beta (no subdomain)</button>
-    <button id="preset-prod-subdomain" class="ui basic violet button">Production Beta</button>
-  </div>
-</div>
-<div class="ui centered grid">
-  <div class="ui segment">
-    <h4 class="ui header">1. Choose OneSignal SDK</h4>
-    <button id="btn-development-sdk" class="ui basic button">Development</button>
-    <button id="btn-production-local-sdk" class="ui basic button">Production (Local)</button>
-    <button id="btn-production-sdk" class="ui basic button">Production</button>
-    <button id="btn-production-beta-sdk" class="ui basic button">Production</button>
-  </div>
-</div>
-<div class="ui centered grid">
-  <div class="ui segment" style="text-align: initial;">
-    <h4 class="ui header" style="text-align: center;">2. Set Parameters</h4>
-    <form class="ui form">
-      <div class="inline field">
-        <div class="ui checkbox">
-          <input id="enable-logging" type="checkbox" tabindex="0" checked="true">
-          <label>Enable Logging</label>
-        </div>
-      </div>
-      <div class="inline field">
-        <div class="ui checkbox">
-          <input id="use-modal" type="checkbox" tabindex="1">
-          <label>Use modal prompt for HTTPS</label>
-        </div>
-      </div>
-      <div class="inline field">
-        <div class="ui checkbox">
-          <input id="send-welcome-notification" type="checkbox" tabindex="1" checked="true">
-          <label>Send welcome notification</label>
-        </div>
-      </div>
-      <div class="field">
-        <label>App ID</label>
-        <input id="appId" type="text">
-      </div>
-      <div class="field">
-        <label>Subdomain</label>
-        <input id="subdomain" type="text">
-      </div>
-      <div class="field">
-        <label>Safari Web ID</label>
-        <input id="safariId" type="text">
-      </div>
-    </form>
-  </div>
-</div>
-<div class="ui centered grid">
-  <div class="ui segment">
-    <h4 class="ui header">3. Choose <code>init()</code> Subroutine</h4>
-    <button id="btn-http" class="ui basic button">HTTP</button>
-    <button id="btn-https" class="ui basic button">HTTPS</button>
-  </div>
-</div>
-<div class="ui centered grid">
-  <div class="ui segment">
-    <button id="btn-register" class="ui basic button"><code>registerForPushNotifications()</code></button>
-    <button id="btn-supported" class="ui basic button"><code>isPushNotificationsSupported()</code></button>
-    <button id="btn-enabled" class="ui basic button"><code>isPushNotificationsEnabled()</code></button>
-  </div>
-</div>
-<script src="jquery.min.js"></script>
-<script src="semantic.min.js"></script>
+<h4>OneSignal Web SDK Test Page</h4>
+<p>Open the <code>Console</code>!</p>
 <script>
-  var DEV_HOST = 'https://127.0.0.1:3001';
+  var params = JSON.parse('{"' + decodeURI(location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
 
-  function getURLParameter(name) {
-    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+  var options = {
+    autoRegister: false,
+    persistNotification: false,
+//        webhooks: {
+//            cors: false,
+//            'notification.displayed': 'https://localhost:3001/hook/notificationDisplayed',
+//            'notification.clicked': 'https://localhost:3001/hook/notificationClicked'
+//        },
+    promptOptions: {
+      exampleNotificationMessageMobile: 'Notifications will appear on your device',
+      exampleNotificationCaption: '(you can unsubscribe anytime)',
+      acceptButtonText: 'Continue'.toUpperCase(),
+      cancelButtonText: 'No Thanks'.toUpperCase(),
+      showCredit: false
+    },
+    notifyButton: {
+      prenotify: true,
+      showCredit: false,
+      size: 'medium',
+      position: 'bottom-right',
+      enable: true,
+      theme: 'default',
+      text: {
+        'tip.state.unsubscribed': 'Subscribe to notifications',
+        'tip.state.subscribed': "You're subscribed to notifications",
+        'tip.state.blocked': "You've blocked notifications",
+        'message.prenotify': 'Click to subscribe to notifications',
+        'message.action.subscribed': "Thanks for subscribing!",
+        'message.action.resubscribed': "You're subscribed to notifications",
+        'message.action.unsubscribed': "You won't receive notifications again",
+        'dialog.main.title': 'Manage Site Notifications',
+        'dialog.main.button.subscribe': 'SUBSCRIBE',
+        'dialog.main.button.unsubscribe': 'UNSUBSCRIBE',
+        'dialog.blocked.title': 'Unblock Notifications',
+        'dialog.blocked.message': "Follow these instructions to allow notifications:"
+      }
+    }
+  };
+
+  if (params.http) {
+    options = Object.assign(options, {
+      appId: '94db93b8-5838-4acb-a438-4de8a775fb10',
+      subdomainName: 'jasonpang',
+      safari_web_id: 'web.onesignal.auto.56640081-e0ac-44c5-9d26-db4b2624f604'
+    });
+  }
+  if (params.https) {
+    options = Object.assign(options, {
+      appId: '94db93b8-5838-4acb-a438-4de8a775fb10',
+      safari_web_id: 'web.onesignal.auto.56640081-e0ac-44c5-9d26-db4b2624f604'
+    });
+  }
+  if (params.autoregister) {
+    options = Object.assign(options, {
+      autoRegister: true
+    });
   }
 
-  $(function() {
-    $('#preset-prod-no-subdomain').click(function() {
-      $(window).on('webpushtest.sdkloaded', function() {
-        $('#appId').val('94db93b8-5838-4acb-a438-4de8a775fb10');
-        $('#safariId').val('web.onesignal.auto.56640081-e0ac-44c5-9d26-db4b2624f604');
-        $('#btn-https').click();
-      });
-      $('#btn-production-beta-sdk').click();
-    });
-    $('#preset-prod-subdomain').click(function() {
-      $(window).on('webpushtest.sdkloaded', function() {
-        $('#appId').val('94db93b8-5838-4acb-a438-4de8a775fb10');
-        $('#subdomain').val('jasonpang');
-        $('#safariId').val('web.onesignal.auto.56640081-e0ac-44c5-9d26-db4b2624f604');
-        $('#btn-https').click();
-      });
-      $('#btn-production-beta-sdk').click();
-    });
+  var OneSignal = OneSignal || [];
 
-    $('#btn-production-local-sdk').click(function() {
-      window.OneSignal = window.OneSignal || [];
-      $(window).trigger('webpushtest.sdkloaded');
-      $.getScript( DEV_HOST + "/sdks/OneSignalSDK.js", function( data, textStatus, code ) {
-        //console.info('Loading development OneSignal SDK script: ', code);
-      });
-    });
-    $('#btn-production-sdk').click(function() {
-      $.getScript( "https://cdn.onesignal.com/sdks/OneSignalSDK.js", function( data, textStatus, code ) {
-        //console.info('Loading production OneSignal SDK script: ', code);
-        window.OneSignal = window.OneSignal || [];
-        $(window).trigger('webpushtest.sdkloaded');
-      });
-    });
-    $('#btn-production-beta-sdk').click(function() {
-      window.OneSignal = window.OneSignal || [];
-      $(window).trigger('webpushtest.sdkloaded');
-    });
-    $('#btn-http, #btn-https').click(function() {
-      window.OneSignal = window.OneSignal || [];
-      OneSignal.push(function () {
-        OneSignal.log.setLevel('trace');
-      });
-      var options = {};
-      options['appId'] = $('#appId').val();
-      options['path'] = '/onesignal-beta/';
-      options['autoRegister'] = false;
-      options['persistNotification'] = false;
-//            options['webhooks'] = {
-//                cors: false,
-//                'notification.displayed': 'https://localhost:3001/hook/notificationDisplayed',
-//                'notification.clicked': 'https://localhost:3001/hook/notificationClicked'
-//            };
-      options['promptOptions'] = {
-        exampleNotificationMessageMobile: 'Notifications will appear on your device',
-        exampleNotificationCaption: '(you can unsubscribe anytime)',
-        acceptButtonText: 'Continue'.toUpperCase(),
-        cancelButtonText: 'No Thanks'.toUpperCase(),
-        showCredit: false
-      };
-      options['notifyButton'] = {
-        prenotify: true,
-        showCredit: false,
-        size: 'large',
-        position: 'bottom-left',
-        enable: true,
-        theme: 'inverse',
-        text: {
-          'tip.state.unsubscribed': 'Subscribe to notifications',
-          'tip.state.subscribed': "You're subscribed to notifications",
-          'tip.state.blocked': "You've blocked notifications",
-          'message.prenotify': 'Click to subscribe to notifications',
-          'message.action.subscribed': "Thanks for subscribing!",
-          'message.action.resubscribed': "You're subscribed to notifications",
-          'message.action.unsubscribed': "You won't receive notifications again",
-          'dialog.main.title': 'Manage Site Notifications',
-          'dialog.main.button.subscribe': 'SUBSCRIBE',
-          'dialog.main.button.unsubscribe': 'UNSUBSCRIBE',
-          'dialog.blocked.title': 'Unblock Notifications',
-          'dialog.blocked.message': "Follow these instructions to allow notifications:"
-        }
-      };
-      if ($('#subdomain').val())
-        options['subdomainName'] = $('#subdomain').val();
-      if ($('#safariId').val())
-        options['safari_web_id'] = $('#safariId').val();
-      options['welcomeNotification'] = {
-        title: 'My Personal Blog',
-        message: 'Thanks for subscribing!',
-        url: 'https://www.jasonpang.me'
-      };
-      OneSignal.push(["init", options]);
-    });
-    $('#btn-register').click(function() {
-      if ($('#use-modal').is(':checked')) {
-        OneSignal.registerForPushNotifications({ modalPrompt: true });
-      }
-      else {
-        OneSignal.registerForPushNotifications();
-      }
-    });
-    $('#btn-supported').click(function() { console.log('isPushNotificationsSupported(): ', OneSignal.isPushNotificationsSupported()); });
-    $('#btn-enabled').click(function() { OneSignal.isPushNotificationsEnabled(function(enabled) { console.log('isPushNotificationsEnabled(): ', enabled); }); });
+  OneSignal.push(["addListenerForNotificationOpened", function(data) {
+    console.warn("[Page] addListenerForNotificationOpened:", data);
+  }]);
 
-    if (getURLParameter('sub')) {
-      $('#preset-prod-subdomain').click();
-    } else if (getURLParameter('nosub')) {
-      $('#preset-prod-no-subdomain').click();
-    }
+  OneSignal.push(function() {
+    OneSignal.on('initialize', function (e) {
+      console.warn('OneSignal initialize event!', e);
+    });
+    OneSignal.on('subscriptionChange', function (e) {
+      console.warn('OneSignal subscriptionChange event!', e);
+    });
+    OneSignal.on('notificationPermissionChange', function(e) {
+      console.warn('OneSignal notificationPermissionChange event!', e);
+    });
+    window.addEventListener('onesignal.subscription.changed', function(event) {
+      console.warn('onesignal.subscription.changed:', event.detail);
+    });
+    window.addEventListener('onesignal.prompt.native.permissionchanged', function(event) {
+      console.warn('onesignal.prompt.native.permissionchanged:', event.detail.from, event.detail.to);
+    });
+    window.addEventListener('onesignal.prompt.custom.clicked', function(event) {
+      console.warn('onesignal.prompt.custom.clicked:', event.detail.result);
+    });
   });
 
-  window.OneSignal = window.OneSignal || [];
-  OneSignal.push(["addListenerForNotificationOpened", function(data) {
-    console.warn("Received NotificationOpened:", data);
-  }]);
+  OneSignal.push(function() {
+    OneSignal.log.setLevel('trace');
+    OneSignal.init(options);
+  });
 </script>
-<p>Lorem ipsum dolor sit amet, eu vitae perfecto persequeris mei, in quot mnesarchum eos. Paulo nonumy appareat ex mel, dicunt constituam est id, tempor iuvaret mentitum et qui. Ei alterum dolorum corpora pri, ad sed eros mutat. Pri esse eloquentiam ne. Usu at esse persius phaedrum. Eum in assentior gloriatur, populo dolorem contentiones vel ut. Novum nihil consulatu est ne, id modus dolorem quo. Nec no prima malis lobortis, legere dignissim sea an. Facilisi dissentiunt quo at, ex duo iusto singulis, pro ad iusto omittam. Sit odio cetero ullamcorper ex, eum tale omittam epicurei et. Nam iuvaret officiis id. Pro at meis lucilius. Eum cu nibh expetenda. Ei nam nemore eligendi offendit, eu sit probo detracto forensibus, sea ea stet repudiandae. Affert feugait pro an, quo at ludus ponderum. Malorum sadipscing mei et. Duis quas ex nam, sea et agam ipsum aliquam. In mucius labore facilisis eum, mea prompta adversarium ut. Ea graeco commodo consulatu qui. Ex pri molestie dissentiunt, facilis mediocritatem te eum. Audiam meliore tincidunt cu mei, cum elitr regione suscipit ea. Eum duis primis ad. No pro prima similique democritum. Stet liber ei vix. Ne sea timeam nonumes invenire, cum aeterno nominati molestiae ut.</p>
-<p>Lorem ipsum dolor sit amet, eu vitae perfecto persequeris mei, in quot mnesarchum eos. Paulo nonumy appareat ex mel, dicunt constituam est id, tempor iuvaret mentitum et qui. Ei alterum dolorum corpora pri, ad sed eros mutat. Pri esse eloquentiam ne. Usu at esse persius phaedrum. Eum in assentior gloriatur, populo dolorem contentiones vel ut. Novum nihil consulatu est ne, id modus dolorem quo. Nec no prima malis lobortis, legere dignissim sea an. Facilisi dissentiunt quo at, ex duo iusto singulis, pro ad iusto omittam. Sit odio cetero ullamcorper ex, eum tale omittam epicurei et. Nam iuvaret officiis id. Pro at meis lucilius. Eum cu nibh expetenda. Ei nam nemore eligendi offendit, eu sit probo detracto forensibus, sea ea stet repudiandae. Affert feugait pro an, quo at ludus ponderum. Malorum sadipscing mei et. Duis quas ex nam, sea et agam ipsum aliquam. In mucius labore facilisis eum, mea prompta adversarium ut. Ea graeco commodo consulatu qui. Ex pri molestie dissentiunt, facilis mediocritatem te eum. Audiam meliore tincidunt cu mei, cum elitr regione suscipit ea. Eum duis primis ad. No pro prima similique democritum. Stet liber ei vix. Ne sea timeam nonumes invenire, cum aeterno nominati molestiae ut.</p>
-<p>Lorem ipsum dolor sit amet, eu vitae perfecto persequeris mei, in quot mnesarchum eos. Paulo nonumy appareat ex mel, dicunt constituam est id, tempor iuvaret mentitum et qui. Ei alterum dolorum corpora pri, ad sed eros mutat. Pri esse eloquentiam ne. Usu at esse persius phaedrum. Eum in assentior gloriatur, populo dolorem contentiones vel ut. Novum nihil consulatu est ne, id modus dolorem quo. Nec no prima malis lobortis, legere dignissim sea an. Facilisi dissentiunt quo at, ex duo iusto singulis, pro ad iusto omittam. Sit odio cetero ullamcorper ex, eum tale omittam epicurei et. Nam iuvaret officiis id. Pro at meis lucilius. Eum cu nibh expetenda. Ei nam nemore eligendi offendit, eu sit probo detracto forensibus, sea ea stet repudiandae. Affert feugait pro an, quo at ludus ponderum. Malorum sadipscing mei et. Duis quas ex nam, sea et agam ipsum aliquam. In mucius labore facilisis eum, mea prompta adversarium ut. Ea graeco commodo consulatu qui. Ex pri molestie dissentiunt, facilis mediocritatem te eum. Audiam meliore tincidunt cu mei, cum elitr regione suscipit ea. Eum duis primis ad. No pro prima similique democritum. Stet liber ei vix. Ne sea timeam nonumes invenire, cum aeterno nominati molestiae ut.</p>
-<p>Lorem ipsum dolor sit amet, eu vitae perfecto persequeris mei, in quot mnesarchum eos. Paulo nonumy appareat ex mel, dicunt constituam est id, tempor iuvaret mentitum et qui. Ei alterum dolorum corpora pri, ad sed eros mutat. Pri esse eloquentiam ne. Usu at esse persius phaedrum. Eum in assentior gloriatur, populo dolorem contentiones vel ut. Novum nihil consulatu est ne, id modus dolorem quo. Nec no prima malis lobortis, legere dignissim sea an. Facilisi dissentiunt quo at, ex duo iusto singulis, pro ad iusto omittam. Sit odio cetero ullamcorper ex, eum tale omittam epicurei et. Nam iuvaret officiis id. Pro at meis lucilius. Eum cu nibh expetenda. Ei nam nemore eligendi offendit, eu sit probo detracto forensibus, sea ea stet repudiandae. Affert feugait pro an, quo at ludus ponderum. Malorum sadipscing mei et. Duis quas ex nam, sea et agam ipsum aliquam. In mucius labore facilisis eum, mea prompta adversarium ut. Ea graeco commodo consulatu qui. Ex pri molestie dissentiunt, facilis mediocritatem te eum. Audiam meliore tincidunt cu mei, cum elitr regione suscipit ea. Eum duis primis ad. No pro prima similique democritum. Stet liber ei vix. Ne sea timeam nonumes invenire, cum aeterno nominati molestiae ut.</p>
-<p>Lorem ipsum dolor sit amet, eu vitae perfecto persequeris mei, in quot mnesarchum eos. Paulo nonumy appareat ex mel, dicunt constituam est id, tempor iuvaret mentitum et qui. Ei alterum dolorum corpora pri, ad sed eros mutat. Pri esse eloquentiam ne. Usu at esse persius phaedrum. Eum in assentior gloriatur, populo dolorem contentiones vel ut. Novum nihil consulatu est ne, id modus dolorem quo. Nec no prima malis lobortis, legere dignissim sea an. Facilisi dissentiunt quo at, ex duo iusto singulis, pro ad iusto omittam. Sit odio cetero ullamcorper ex, eum tale omittam epicurei et. Nam iuvaret officiis id. Pro at meis lucilius. Eum cu nibh expetenda. Ei nam nemore eligendi offendit, eu sit probo detracto forensibus, sea ea stet repudiandae. Affert feugait pro an, quo at ludus ponderum. Malorum sadipscing mei et. Duis quas ex nam, sea et agam ipsum aliquam. In mucius labore facilisis eum, mea prompta adversarium ut. Ea graeco commodo consulatu qui. Ex pri molestie dissentiunt, facilis mediocritatem te eum. Audiam meliore tincidunt cu mei, cum elitr regione suscipit ea. Eum duis primis ad. No pro prima similique democritum. Stet liber ei vix. Ne sea timeam nonumes invenire, cum aeterno nominati molestiae ut.</p>
 </body>
 </html>
