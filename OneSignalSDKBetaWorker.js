@@ -1,0 +1,1 @@
+importScripts('https://onesignal.com/beta_sdks/OneSignalSDKBetaWorker.js');
